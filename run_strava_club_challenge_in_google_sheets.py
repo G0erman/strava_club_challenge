@@ -24,7 +24,8 @@ def connect_to_spreadsheet(key, worksheet):
 
     # connect to google sheet
     # gc = gspread.oauth()
-    gc = gspread.service_account()
+    gc = gspread.service_account(filename='private/gcp_keys.json')
+    #gc = gspread.service_account()
 
     # open spreadsheet
     sht1 = gc.open_by_key(key).worksheet(worksheet)
