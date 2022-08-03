@@ -44,6 +44,15 @@ Automate the data collection and processing to get user activity data from Strav
   - Add features:
     - Cloudword with trips.
 
+## How to use?
+
+- Duplicate your google spreadsheet sheet's orinal_template.
+- Rename the sheet orinal_template to template.
+- Set the start day, in the column D2 with format yyyy-mm-dd should be a monday.
+- You have all your users token created beforehand.
+- Run the script `python run_strava_club_challenge_in_google_sheets.py`.
+- If you have a montly, rename your spreadsheet's sheet to yyyy-mm-dd.
+
 ## Restrictions
 
 - "gspread.exceptions.APIError: {'code': 429, 'message': "Quota exceeded for quota metric 'Read requests' and limit 'Read requests per minute per user' of service 'sheets.googleapis.com' for consumer 'project_number:592854038195'.", 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'RATE_LIMIT_EXCEEDED', 'domain': 'googleapis.com', 'metadata': {'quota_limit': 'ReadRequestsPerMinutePerUser', 'service': 'sheets.googleapis.com', 'consumer': 'projects/592854038195', 'quota_metric': 'sheets.googleapis.com/read_requests'}}]}"
