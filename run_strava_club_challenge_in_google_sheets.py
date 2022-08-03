@@ -23,7 +23,8 @@ import time
 def connect_to_spreadsheet(key, worksheet):
 
     # connect to google sheet
-    gc = gspread.oauth()
+    # gc = gspread.oauth()
+    gc = gspread.service_account()
 
     # open spreadsheet
     sht1 = gc.open_by_key(key).worksheet(worksheet)
@@ -65,13 +66,20 @@ def get_user_info(sht):
     plan_cell = 'C' + str(n)
     
     name = sht.acell(name_cell).value
-    strava_id = int(sht.acell(strava_id_cell).value)
-    plan = int(sht.acell(plan_cell).value)
-    
+    print(name)
+    # strava_id = int(sht.acell(strava_id_cell).value)
+    # print(strava_id)
+    # plan = int(sht.acell(plan_cell).value)
+
+    # Avoid Broke the Quota exceeded for quota metric per user.
+    # time.sleep(30)
+
     users = {}
     
-    while name != '':
+    #while name != '':
+    while name is not None:
         strava_id = int(sht.acell(strava_id_cell).value)
+        print(strava_id)
         plan = int(sht.acell(plan_cell).value)
         user = {'name' :  name, 'plan' : plan, 'value' : 0, 'row_nbr' : n}
         users[strava_id] = user
@@ -81,6 +89,9 @@ def get_user_info(sht):
         strava_id_cell = 'B' + str(n)
         plan_cell = 'C' + str(n)
         name = sht.acell(name_cell).value
+        print(name, type(name))
+        #name = ''
+
 
     return users
 
@@ -159,7 +170,7 @@ def get_user_activities_from_strava(user_dict, start_date_epoch, end_date_epoch,
             strava_tokens = json.load(json_file)
         ## If access_token has expired then use the refresh_token to get the new access_token
         if strava_tokens['expires_at'] < time.time():
-            #Make Strava auth API call with current refresh token
+            # Make Strava auth API call with current refresh token
             response = requests.post(
                                 url = 'https://www.strava.com/oauth/token',
                                 data = {
@@ -198,9 +209,12 @@ def get_user_activities_from_strava(user_dict, start_date_epoch, end_date_epoch,
         while page < 2: # this is to limit the results coming back just in case a user has hundreds of activities in that window
 
             # get page of activities from Strava
-            r = requests.get(url + '?access_token=' + access_token + '&per_page=200' + '&page=' + str(page) + '&after=' + str(start_date_epoch) + '&before=' + str(end_date_epoch))
+            request_string = url + '?access_token=' + access_token + '&per_page=200' + '&page=' + str(page) + '&after=' + str(start_date_epoch) + '&before=' + str(end_date_epoch)
+            print(request_string)
+            r = requests.get(request_string)
+            # r = requests.get(url + '?access_token=' + access_token + '&per_page=200' + '&page=' + str(page) + '&after=' + str(start_date_epoch) + '&before=' + str(end_date_epoch))
             r = r.json()
-
+            print(r)
             # if no results then exit loop
             if not r:
                 break
@@ -230,17 +244,16 @@ def get_user_activities_from_strava(user_dict, start_date_epoch, end_date_epoch,
 # weekly_user_dict: dictionary of dictionaries keyed by week then strava_id, contains weekly user data
 # user_dict: dictionary of dictionaries keyed on strava_id, used for loop control
 def parse_activity_data(weekly_user_dict, user_dict, activities):
-
+    print('Initial Dict:', weekly_user_dict)
     # loop over user ids
     for user in user_dict:
         strava_id = user
 
         mileage_total = 0
-        rides_over_fifty_two_miles = 0
-        rides_over_fifty_two_hundred_feet = 0
+        #rides_over_fifty_two_miles = 0
+        #rides_over_fifty_two_hundred_feet = 0
 
         activity = activities[user]
-
 
         for index, row in activity.iterrows():
             
@@ -251,6 +264,9 @@ def parse_activity_data(weekly_user_dict, user_dict, activities):
                 activity_elevation = int(float(row['total_elevation_gain'])) # in meters
 
                 # if activity is from outside the challenge scope, break
+                print(activity_date, week_of)
+
+                # Fix me
                 if week_of not in weekly_user_dict:
                     break
 
@@ -258,11 +274,13 @@ def parse_activity_data(weekly_user_dict, user_dict, activities):
   
                 # get value that will be written to sheet
                 if plan == 1: # 52 miles over the course of the week
-                    weekly_user_dict[week_of][strava_id]['value'] += activity_mileage*0.000621371192 # convert to miles
+                    #weekly_user_dict[week_of][strava_id]['value'] += activity_mileage*0.000621371192 # convert to miles
+                    weekly_user_dict[week_of][strava_id]['value'] += activity_mileage/1000
                 if plan == 2 and activity_mileage >= 83685: # one 52 mile ride during the week (83685 meters)
                     weekly_user_dict[week_of][strava_id]['value'] += 1
                 if plan == 3 and activity_elevation >= 1584: # one 5200 ft ride during the week (1584 meters)
                     weekly_user_dict[week_of][strava_id]['value'] += 1
+        print('Initial dict:', weekly_user_dict)
 
 # write weekly user data to google sheet
 # input
@@ -288,6 +306,7 @@ def write_to_sheet(sht, weekly_user_dict, user_ct):
                 # write value to week/user cell if it isn't 0 (to save on API calls)
                 if weekly_user_dict[week][user]['value'] > 0:
                     update_cell = str(date_col) + str(row_nbr)
+                    print(date_col)
                     value = weekly_user_dict[week][user]['value']
 
                     sht.update(update_cell, value)
@@ -296,11 +315,11 @@ def write_to_sheet(sht, weekly_user_dict, user_ct):
 def main():
 
     # INPUT
-    google_sheet_key = '[GOOGLE_SHEET_KEY]'
-    google_sheet_name = '[GOOGLE_SHEET_NAME]'
-    nbr_of_weeks = 13
-    client_id = [CLIENT_ID]
-    client_secret = '[CLIENT_SECRET]'
+    google_sheet_key = str(os.getenv('GOOGLE_SHEET_KEY'))
+    google_sheet_name = str(os.getenv('GOOGLE_SHEET_NAME'))
+    nbr_of_weeks = int(os.getenv('NBR_OF_WEEKS'))
+    client_id = int(os.getenv('CLIENT_ID'))
+    client_secret = str(os.getenv('CLIENT_SECRET'))
 
     # connect to google sheet
     sht = connect_to_spreadsheet(google_sheet_key, google_sheet_name)
@@ -317,6 +336,7 @@ def main():
 
     # get user activity from strava
     activities = get_user_activities_from_strava(user_dict, start_date_epoch, end_date_epoch, client_id, client_secret)
+    print(activities)
 
     # add weekly values to weekly/user data structure
     parse_activity_data(weekly_user_dict, user_dict, activities)
