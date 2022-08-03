@@ -2,16 +2,22 @@
 
 Automate the data collection and processing to get user activity data from Strava and import it into Google Sheets.
 
-## Configuration Steps 
+## Configuration Steps - Dev
 
 - Clone repo.
   - Install python libraries gspread, pendulum, typer
 - [Configure Strava API account](https://developers.strava.com/docs/getting-started/#account)
-  - Get authorization code
+  - The user should be an administrator in the Club.  
+  - Get Client ID	
+  - Get Client Secret
 - Configure google Spreadsheet
+  - Create a project in [Google Cloud Platform](https://docs.gspread.org/en/latest/oauth2.html#oauth-client-id)
+  - Enabled Google Sheets API and Google Drive API
+  - Create a service Account
+  - Generate new key
   - Ensure you have the right spreadsheet template, for example for
     - Google Key: 12bZWyGzkf81sXCXmiWQNQk-OaanoVIXByz3QbsY7Mpo
-  - Configure [Google authentication](https://docs.gspread.org/en/latest/oauth2.html#oauth-client-id), choose between Service Account and OAuth Client
+    - Share the spreadsheet with the [service account](https://stackoverflow.com/questions/38949318/google-sheets-api-returns-the-caller-does-not-have-permission-when-using-serve)
 - Configure the file `.env` with your credentials
   - In mac machines, export the environment vars `export $(cat .env | xargs)`
 
@@ -25,14 +31,18 @@ Automate the data collection and processing to get user activity data from Strav
   - Return the url generated
   - Execute `python auth_for_strava_user.py strava_id strava_code` to generate the token.
 
-## Next Steps
+## How to contribute?
 
 - Give me love, welcome any improvement.
-- Deploy in a cloud environment (Azure, AWS or GCP).
-- Call from slack.
-- Improve code quality.
-- Add features:
-  - Cloudword with trips.
+- Create new github issue for each contributions. e.g.
+  - Create a Dockerfile
+  - Add requirement file.
+  - Deploy in a cloud environment (Azure, AWS or GCP).
+  - Implement CI/CD
+  - Call from slack.
+  - Improve code quality. PEPs
+  - Add features:
+    - Cloudword with trips.
 
 ## Restrictions
 
