@@ -13,14 +13,24 @@ Automate the data collection and processing to get user activity data from Strav
   - Ensure you have the right spreadsheet template.
   - Configure [Google authentication](https://docs.gspread.org/en/latest/oauth2.html#oauth-client-id), choose between Service Account and OAuth Client
 
-## Downsides
+## Permissions
 
 - Each team member should authorize the App and return the authorization code.
   - Open your Strava account:
   - Return your strava_id
-  - Authorize the app: https://www.strava.com/oauth/authorize?client_id=76814&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=profile:read_all,activity:read_all
+  - Authorize the app (It is necessary to authorize both optional rights: private activities, and strava profile):
+    - https://www.strava.com/oauth/authorize?client_id=[YOUR_CLIENT_ID]&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=profile:read_all,activity:read_all
   - Return the url generated
   - Execute `auth_for_strava_user.py` to generate the token.
+
+## Next Steps
+
+- Give me love, welcome any improvement.
+- Deploy in a cloud environment (Azure, AWS or GCP).
+- Call from slack.
+- Improve code quality.
+- Add features:
+  - Cloudword with trips.
 
 ## Restrictions
 
