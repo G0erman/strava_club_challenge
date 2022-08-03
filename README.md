@@ -5,13 +5,15 @@ Automate the data collection and processing to get user activity data from Strav
 ## Configuration Steps 
 
 - Clone repo.
-  - Install libraries gspread, pendulum
+  - Install python libraries gspread, pendulum, typer
 - [Configure Strava API account](https://developers.strava.com/docs/getting-started/#account)
   - Get authorization code
 - Configure google Spreadsheet
-  - Get Google Key: 12bZWyGzkf81sXCXmiWQNQk-OaanoVIXByz3QbsY7Mpo
-  - Ensure you have the right spreadsheet template.
+  - Ensure you have the right spreadsheet template, for example for
+    - Google Key: 12bZWyGzkf81sXCXmiWQNQk-OaanoVIXByz3QbsY7Mpo
   - Configure [Google authentication](https://docs.gspread.org/en/latest/oauth2.html#oauth-client-id), choose between Service Account and OAuth Client
+- Configure the file `.env` with your credentials
+  - In mac machines, export the environment vars `export $(cat .env | xargs)`
 
 ## Permissions
 
@@ -21,7 +23,7 @@ Automate the data collection and processing to get user activity data from Strav
   - Authorize the app (It is necessary to authorize both optional rights: private activities, and strava profile):
     - https://www.strava.com/oauth/authorize?client_id=[YOUR_CLIENT_ID]&response_type=code&redirect_uri=http://localhost/exchange_token&approval_prompt=force&scope=profile:read_all,activity:read_all
   - Return the url generated
-  - Execute `auth_for_strava_user.py` to generate the token.
+  - Execute `python auth_for_strava_user.py strava_id strava_code` to generate the token.
 
 ## Next Steps
 
