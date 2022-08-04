@@ -316,11 +316,11 @@ def write_to_sheet(sht, weekly_user_dict, user_ct):
 def main():
 
     # INPUT
-    google_sheet_key = str(os.getenv('GOOGLE_SHEET_KEY'))
-    google_sheet_name = str(os.getenv('GOOGLE_SHEET_NAME'))
+    google_sheet_key = str(os.getenv('GOOGLE_SHEET_KEY')).strip("'")
+    google_sheet_name = str(os.getenv('GOOGLE_SHEET_NAME')).strip("'")
     nbr_of_weeks = int(os.getenv('NBR_OF_WEEKS'))
     client_id = int(os.getenv('CLIENT_ID'))
-    client_secret = str(os.getenv('CLIENT_SECRET'))
+    client_secret = str(os.getenv('CLIENT_SECRET')).strip("'")
 
     # connect to google sheet
     sht = connect_to_spreadsheet(google_sheet_key, google_sheet_name)
