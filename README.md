@@ -2,10 +2,37 @@
 
 Automate the data collection and processing to get user activity data from Strava and import it into Google Sheets.
 
-## Configuration Steps - Dev
+## How to use?
+
+### Environment
+
+#### Docker and PyCharm pro (Recommended)
 
 - Clone repo.
-  - Install python libraries gspread, pendulum, typer
+- Double check environment vars on .env
+- Build docker image `sudo docker build -t image_name .`
+- Configure PyCharm: https://www.jetbrains.com/help/pycharm/using-docker-as-a-remote-interpreter.html#summary
+- Configure docker vars in PyCharm run configuration:
+ `--env-file /Users/absolute/path/strava_club_challenge_public/.env --entrypoint -v /Users/absolute/path/strava_club_challenge_public:/strava_app --rm`
+- Debug the file that you want.
+
+#### Local 
+
+- Create a virtual environment. (conda, venv, etc)
+- In Unix-like os export environment vars per session `export $(cat .env | xargs)`
+
+### Operation
+
+- Duplicate your Google spreadsheet sheet's `original_template`.
+- Rename the sheet `original_template` to `template`.
+- Set the start day, in the column `D2` with format yyyy-mm-dd should be a monday.
+- You should have all your users token created beforehand.
+- Run the script `python run_strava_club_challenge_in_google_sheets.py`.
+- If you have a montly, rename your spreadsheet's sheet to yyyy-mm-dd.
+
+
+## Configuration from scratch for new project.
+
 - [Configure Strava API account](https://developers.strava.com/docs/getting-started/#account)
   - The user should be an administrator in the Club.  
   - Get Client ID	
@@ -19,7 +46,6 @@ Automate the data collection and processing to get user activity data from Strav
     - Google Key: 12bZWyGzkf81sXCXmiWQNQk-OaanoVIXByz3QbsY7Mpo
     - Share the spreadsheet with the [service account](https://stackoverflow.com/questions/38949318/google-sheets-api-returns-the-caller-does-not-have-permission-when-using-serve)
 - Configure the file `.env` with your credentials
-  - In mac machines, export the environment vars `export $(cat .env | xargs)`
 
 ## Permissions
 
@@ -36,6 +62,7 @@ Automate the data collection and processing to get user activity data from Strav
 - Give me love, welcome any improvement.
 - Create new github issue for each contributions. e.g.
   - Create a Dockerfile
+  - Improve documentation
   - Add requirement file.
   - Deploy in a cloud environment (Azure, AWS or GCP).
   - Implement CI/CD
@@ -43,15 +70,6 @@ Automate the data collection and processing to get user activity data from Strav
   - Improve code quality. PEPs
   - Add features:
     - Cloudword with trips.
-
-## How to use?
-
-- Duplicate your google spreadsheet sheet's orinal_template.
-- Rename the sheet orinal_template to template.
-- Set the start day, in the column D2 with format yyyy-mm-dd should be a monday.
-- You have all your users token created beforehand.
-- Run the script `python run_strava_club_challenge_in_google_sheets.py`.
-- If you have a montly, rename your spreadsheet's sheet to yyyy-mm-dd.
 
 ## Restrictions
 
