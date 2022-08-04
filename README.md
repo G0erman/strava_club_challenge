@@ -4,31 +4,37 @@ Automate the data collection and processing to get user activity data from Strav
 
 ## How to use?
 
-### Environment
+**Google spreadsheet**
 
-#### Docker and PyCharm pro (Recommended)
+- Each month:
+- Duplicate your Google spreadsheet sheet's `original_template`.
+- Rename the sheet `original_template` to `template`.
+- Set the start day, in the column `D2` with format yyyy-mm-dd should be a monday.
+- You should have all your users token created beforehand.
+- If you have a monthly context, rename your spreadsheet's sheet to yyyy-mm.
+
+**Runtime**
 
 - Clone repo.
 - Double check environment vars on .env
-- Build docker image `sudo docker build -t image_name .`
+- Build docker image 
+  - `sudo docker build -t container_name:0.0.1 .`
+- Run 
+  - `docker run --rm --env-file .env -v /Users/full_path/strava_club_challenge_private:/strava_app --entrypoint python container_name:0.0.1 run_strava_club_challenge_in_google_sheets.py`
+
+### Development Environment
+
+#### Option 1: Docker and PyCharm pro (Recommended)
+
 - Configure PyCharm: https://www.jetbrains.com/help/pycharm/using-docker-as-a-remote-interpreter.html#summary
 - Configure docker vars in PyCharm run configuration:
  `--env-file /Users/absolute/path/strava_club_challenge_public/.env --entrypoint -v /Users/absolute/path/strava_club_challenge_public:/strava_app --rm`
 - Debug the file that you want.
 
-#### Local 
+#### Option 2: Local 
 
 - Create a virtual environment. (conda, venv, etc)
 - In Unix-like os export environment vars per session `export $(cat .env | xargs)`
-
-### Operation
-
-- Duplicate your Google spreadsheet sheet's `original_template`.
-- Rename the sheet `original_template` to `template`.
-- Set the start day, in the column `D2` with format yyyy-mm-dd should be a monday.
-- You should have all your users token created beforehand.
-- Run the script `python run_strava_club_challenge_in_google_sheets.py`.
-- If you have a montly, rename your spreadsheet's sheet to yyyy-mm-dd.
 
 
 ## Configuration from scratch for new project.
@@ -61,12 +67,11 @@ Automate the data collection and processing to get user activity data from Strav
 
 - Give me love, welcome any improvement.
 - Create new github issue for each contributions. e.g.
-  - Create a Dockerfile
   - Improve documentation
   - Add requirement file.
   - Deploy in a cloud environment (Azure, AWS or GCP).
   - Implement CI/CD
-  - Call from slack.
+  - Call/push from/to slack.
   - Improve code quality. PEPs
   - Add features:
     - Cloudword with trips.
