@@ -203,7 +203,8 @@ def get_user_activities_from_strava(user_dict, start_date_epoch, end_date_epoch,
                     "distance",
                     "moving_time",
                     "elapsed_time",
-                    "total_elevation_gain"
+                    "total_elevation_gain",
+                    "trainer"
             ]
         )
 
@@ -230,6 +231,7 @@ def get_user_activities_from_strava(user_dict, start_date_epoch, end_date_epoch,
                 user_activities.loc[x + (page-1)*200,'moving_time'] = r[x]['moving_time']
                 user_activities.loc[x + (page-1)*200,'elapsed_time'] = r[x]['elapsed_time']
                 user_activities.loc[x + (page-1)*200,'total_elevation_gain'] = r[x]['total_elevation_gain']
+                user_activities.loc[x + (page-1)*200,'trainer'] = r[x]['trainer']
 
             # increment page
             page += 1
@@ -258,7 +260,7 @@ def parse_activity_data(weekly_user_dict, user_dict, activities):
 
         for index, row in activity.iterrows():
             
-            if row['type'] == 'Ride' or row['type'] == 'VirtualRide':
+            if row['type'] == 'Ride' and not row['trainer']:
                 activity_date = datetime.strptime(row['start_date_local'][:10], '%Y-%m-%d')
                 week_of = pendulum.instance(activity_date).start_of('week').date()
                 activity_mileage = int(float(row['distance'])) # in meters
