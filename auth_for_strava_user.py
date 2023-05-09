@@ -12,7 +12,7 @@ import typer
 
 def generate_token(strava_id: int, code: str):
     client_id = int(os.getenv('CLIENT_ID'))
-    client_secret = str(os.getenv('CLIENT_SECRET'))
+    client_secret = str(os.getenv('CLIENT_SECRET')).strip("'")
 
     # Make Strava auth API call with your
     # client_code, client_secret and code
