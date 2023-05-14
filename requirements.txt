@@ -2,3 +2,4 @@ gspread
 pendulum
 typer
 pandas
+boto3

@@ -13,6 +13,11 @@ import codecs
 import pandas as pd
 import requests
 import time
+from spreadsheet import Spreadsheet
+
+from constans import DATA_FILENAME
+
+from s3 import upload_file_to_s3
 
 # connect to google spreadsheet
 # input
@@ -314,7 +319,6 @@ def write_to_sheet(sht, weekly_user_dict, user_ct):
 
                     sht.update(update_cell, value)
 
-
 def main():
 
     # INPUT
@@ -347,6 +351,13 @@ def main():
     # update google sheet with challenge values
     write_to_sheet(sht, weekly_user_dict, len(user_dict))
 
+    # Download backup sheet
+    csv_data = sht.get_all_values()
+    with open(DATA_FILENAME, 'w') as f:
+        writer = csv.writer(f)
+        writer.writerows(csv_data)
+
+    upload_file_to_s3()
 
 if __name__ == "__main__":
     main()
