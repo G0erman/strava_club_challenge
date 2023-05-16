@@ -357,7 +357,7 @@ def main():
         writer = csv.writer(f)
         writer.writerows(csv_data)
 
-    upload_file_to_s3(is_public=True)
+    upload_file_to_s3()
 
 if __name__ == "__main__":
     main()

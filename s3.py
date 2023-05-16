@@ -2,8 +2,8 @@ import boto3
 
 from constans import DATA_FILENAME
 
-BUCKET = "pystravans"
-KEY = "front/data.csv"
+BUCKET = "pystravan-silver"
+KEY = "data.csv"
 REGION = "us-east-2"
 ARGUMENTS = {'ACL': 'public-read'}
 
